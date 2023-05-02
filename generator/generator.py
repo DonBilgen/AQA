@@ -2,7 +2,7 @@ from data.data import Person
 from faker import Faker
 
 faker_ru = Faker('ru_RU')
-Faker.seed()
+Faker.seed() # случайное начальное значение генератора
 
 
 def generated_person():
