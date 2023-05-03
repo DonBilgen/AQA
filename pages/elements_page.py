@@ -2,7 +2,8 @@ import random
 import time
 
 from generator.generator import generated_person
-from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, CheckRadioButtonPageLocators
+from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, CheckRadioButtonPageLocators, \
+    WebTablePageLocators
 from pages.base_page import BasePage
 
 
@@ -62,25 +63,72 @@ class CheckBoxPage(BasePage):
             # print("********** "+title_item.text)
             data.append(title_item.text)
         # print(data)
-        return str(data).replace(' ','').replace('.doc','').lower()
+        return str(data).replace(' ', '').replace('.doc', '').lower()
 
     def get_output_result(self):
         result_list = self.element_are_present(self.locators.OUTPUT_RESULT)
         data = []
         for item in result_list:
             data.append(item.text)
-        return str(data).replace(' ','').lower()
+        return str(data).replace(' ', '').lower()
 
 
 class RadioButtonPage(BasePage):
     locators = CheckRadioButtonPageLocators()
 
-    def click_radio_button(self,choice):
-        choices={'yes': self.locators.YES_RADIOBTN,
-                'impressive': self.locators.IMPRESSIVE_RADIOBTN,
-                'no': self.locators.NO_RADIOBTN}
+    def click_radio_button(self, choice):
+        choices = {'yes': self.locators.YES_RADIOBTN,
+                   'impressive': self.locators.IMPRESSIVE_RADIOBTN,
+                   'no': self.locators.NO_RADIOBTN}
 
         radio = self.element_is_visible(choices[choice]).click()
 
     def get_output_result(self):
         return self.element_is_present(self.locators.OUTPUT_RADIOBTN).text
+
+
+class WebTablePage(BasePage):
+    locators = WebTablePageLocators()
+
+    def add_new_person(self):
+        count = 1
+        while count != 0:
+            person_info = next(generated_person())
+            firstname = person_info.firstname
+            lastname = person_info.lastname
+            email = person_info.email
+            age = person_info.age
+            salary = person_info.salary
+            department = person_info.department
+            self.element_is_visible(self.locators.ADD_BTN).click()
+            self.element_is_visible(self.locators.FIRSTNAME_INPUT).send_keys(firstname)
+            self.element_is_visible(self.locators.LASTNAME_INPUT).send_keys(lastname)
+            self.element_is_visible(self.locators.EMAIL_INPUT).send_keys(email)
+            self.element_is_visible(self.locators.AGE_INPUT).send_keys(age)
+            self.element_is_visible(self.locators.SALARY_INPUT).send_keys(salary)
+            self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
+            self.element_is_visible(self.locators.SUBMIT).click()
+            count -= 1
+            return [firstname, lastname, str(age), email, str(salary), department]
+
+    def check_add_new_person(self):
+        people_list = self.element_are_present(self.locators.FULL_PEOPLE_LIST)
+        data = []
+        for item in people_list:
+            # if item.text !='       ' :
+            data.append(item.text.splitlines())
+        # print(item.text)
+        # print(' ')
+        # print(data[-1])
+        # print('==='*30)
+        # return data[-1]
+        return data
+
+    def search_some_person(self, key_word):
+        self.element_is_visible(self.locators.SEARCH_INPUT).send_keys(key_word)
+        time.sleep(5)
+
+    def check_search_person(self):
+        delete_button = self.element_is_present(self.locators.DELETE_BUTTON)
+        row = delete_button.find_element("xpath", self.locators.ROW_PARENT)
+        return row.text.splitlines()

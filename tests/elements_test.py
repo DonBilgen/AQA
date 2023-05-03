@@ -1,6 +1,7 @@
+import random
 import time
 
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage
 
 
 class TestElements:
@@ -49,3 +50,35 @@ class TestElements:
             assert output_yes == "Yes", 'Error selected = Yes'
             assert output_impressive == "Impressive", 'Error selected = Impressive'
             assert output_no == "No", "!!!!Error select= NO!!!!!"
+
+    class TestWebTable:
+        def test_web_table_add_person(self, driver):
+            web_table_page = WebTablePage(driver, 'https://demoqa.com/webtables')
+            web_table_page.open()
+            # input_new_person = list(web_table_page.add_new_person())
+            input_new_person = web_table_page.add_new_person()
+            # print(' ')
+            # print(input_new_person)
+            # print('***' * 25)
+            output_new_person = web_table_page.check_add_new_person()
+            # print(output_new_person)
+            # time.sleep(5)
+            # assert input_new_person == output_new_person, 'Error creating New person'
+            assert input_new_person in output_new_person, 'Error into New person'
+
+        def test_web_table_search_person(self, driver):
+            web_table_page = WebTablePage(driver, 'https://demoqa.com/webtables')
+            web_table_page.open()
+            select_random = random.randint(0, 5)
+            print(' ')
+            print(select_random)
+            key_person = web_table_page.add_new_person()[select_random]
+            # key_person = web_table_page.add_new_person()[random.randint(0, 5)] # так не работает????
+            print('== ==' * 33)
+            print(key_person)
+            web_table_page.search_some_person(str(key_person))
+            # web_table_page.search_some_person(key_person)
+            table_result = web_table_page.check_search_person()
+            print('**** '*22)
+            print(table_result)
+            assert key_person in table_result
