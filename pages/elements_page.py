@@ -208,3 +208,11 @@ class LinksPage(BasePage):
             self.element_is_present(self.locators.BAD_REQUEST).click()
         else:
             return request.status_code
+
+    def check_not_found_link(self, url):
+        request = requests.get(url)
+        if request.status_code == 404:
+            self.element_is_present(self.locators.NOT_FOUND).click()
+        else:
+            print(request.status_code)
+        return request.status_code

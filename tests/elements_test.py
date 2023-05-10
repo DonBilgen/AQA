@@ -133,5 +133,10 @@ class TestElements:
             link_page = LinksPage(driver, 'https://demoqa.com/links')
             link_page.open()
             response_code = link_page.check_broken_link('https://demoqa.com/bad-request')
-            assert response_code == 400, ""
+            assert response_code == 400, "Error code not 400"
 
+        def test_not_found_link(self, driver):
+            link_page = LinksPage(driver, 'https://demoqa.com/links')
+            link_page.open()
+            response_code = link_page.check_not_found_link('https://demoqa.com/invalid-url')
+            assert response_code == 404, "Error url not 404"
