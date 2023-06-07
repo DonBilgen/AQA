@@ -58,12 +58,12 @@ class TestElements:
             web_table_page.open()
             # input_new_person = list(web_table_page.add_new_person())
             input_new_person = web_table_page.add_new_person()
-            # print(' ')
+
             # print(input_new_person)
-            # print('***' * 25)
+
             output_new_person = web_table_page.check_add_new_person()
             # print(output_new_person)
-            # time.sleep(5)
+
             # assert input_new_person == output_new_person, 'Error creating New person'
             assert input_new_person in output_new_person, 'Error into New person'
 

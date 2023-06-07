@@ -21,4 +21,5 @@ class FormPageLocators:
     CITY_INPUT = (By.CSS_SELECTOR,"input[id='react-select-4-input']")
     SUBMIT = (By.CSS_SELECTOR, "button[id='submit']")
 
-    RESULT_TABLE =(By.XPATH, "//div[@class='table-responsive']//td[2]")
+    # RESULT_TABLE =(By.XPATH, "//div[@class='table-responsive']//td[2]")
+    RESULT_TABLE =(By.XPATH, "//td[2]")
