@@ -2,7 +2,8 @@ import time
 
 from faker.generator import random
 
-from locators.alerts_frame_windows_locators import BrowserWindowsLocators, AlertsPageLocators, FramesPageLocators
+from locators.alerts_frame_windows_locators import BrowserWindowsLocators, AlertsPageLocators, FramesPageLocators, \
+    NestedFramesPageLocators
 from pages.base_page import BasePage
 
 
@@ -86,6 +87,27 @@ class FramesPage(BasePage):
             self.driver.switch_to.default_content()
 
             return [text, width, height]
+
+class NestedFramesPage(BasePage):
+
+        locators = NestedFramesPageLocators()
+
+        def check_nested_frame(self):
+            parent_frame = self.element_is_present(self.locators.FRAME_PARENT)
+            self.driver.switch_to.frame(parent_frame)
+            parent_text = self.element_is_present(self.locators.PARENT_TEXT).text
+
+            child_frame = self.element_is_present(self.locators.FRAME_CHILD)
+            self.driver.switch_to.frame(child_frame)
+            child_text = self.element_is_present(self.locators.CHILD_TEXT).text
+
+            return parent_text, child_text
+
+
+
+
+
+
 
 
 
