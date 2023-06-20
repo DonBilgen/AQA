@@ -15,3 +15,7 @@ class AlertsPageLocators:
     SEE_ALERT_PROMT_BOX_BUTTON = (By.CSS_SELECTOR, "button[id='promtButton']")
     RESULT_PROMT_BOX = (By.CSS_SELECTOR, "span[id='promptResult']")
 
+class FramesPageLocators:
+    FRAME_1 = (By.CSS_SELECTOR, "iframe[id='frame1']")
+    FRAME_2 = (By.CSS_SELECTOR, "iframe[id='frame2']")
+    TITLE_FRAME = (By.CSS_SELECTOR, "h1[id='sampleHeading']")

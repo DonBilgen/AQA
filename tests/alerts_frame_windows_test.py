@@ -1,6 +1,6 @@
 import time
 
-from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage, AlertsPage, FramesPage
 
 
 class TestAlertsFrameWindows:
@@ -51,3 +51,20 @@ class TestAlertsFrameWindows:
 
             assert alert_text_promt_box == f'You entered {my_promt_text}', "Error click btn to see promt box"
 
+    class TestFramePage:
+
+        def test_frames(self, driver):
+            frame_page = FramesPage(driver, 'https://demoqa.com/frames')
+            frame_page.open()
+            result_1 = frame_page.check_frame('frame1')
+            print(result_1)
+            result_2 = frame_page.check_frame('frame2')
+            print(result_2)
+
+            assert result_1 == ['This is a sample page', '500px', '350px']
+            assert result_2 == ['This is a sample page', '100px', '100px']
+
+
+
+
+            pass
