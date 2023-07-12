@@ -1,12 +1,16 @@
+import base64
+import os
 import random
 import time
 
 import requests
+from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 
-from generator.generator import generated_person
+from generator.generator import generated_person, generated_file
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, CheckRadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
+    DynamicPropertiesPageLocators
 from pages.base_page import BasePage
 
 
@@ -208,3 +212,68 @@ class LinksPage(BasePage):
             self.element_is_present(self.locators.BAD_REQUEST).click()
         else:
             return request.status_code
+
+    def check_not_found_link(self, url):
+        request = requests.get(url)
+        if request.status_code == 404:
+            self.element_is_present(self.locators.NOT_FOUND).click()
+        else:
+            print(request.status_code)
+        return request.status_code
+
+
+class UploadAndDownloadPage(BasePage):
+    locators = UploadAndDownloadPageLocators()
+
+    def upload_file(self):
+        file_name, path = generated_file()
+        self.element_is_present(self.locators.UPLOAD_FILE).send_keys(path)
+        time.sleep(5)
+        os.remove(path)
+        text = self.element_is_present(self.locators.UPLOADED_FILE_NAME).text
+        file_name = file_name.split('\\')[-1]
+        text = text.split('\\')[-1]
+
+        return file_name, text
+
+    def download_file(self):
+        link = self.element_is_present(self.locators.DOWNLOAD_FILE).get_attribute('href')
+        link_b64 = base64.b64decode(link)
+        path_name_file = rf'C:\Users\Bil\Documents\GitHub\AQA\filetest{random.randint(0,999)}.jpg'
+        with open(path_name_file, 'wb+') as f:
+            offset = link_b64.find(b'\xff\xd8')
+            f.write(link_b64[offset:])
+            check_file = os.path.exists(path_name_file)
+            f.close()
+            os.remove(path_name_file)
+        return check_file
+
+class DynamicPropertiesPage(BasePage):
+    locators = DynamicPropertiesPageLocators()
+
+    def check_enable_button(self):
+        try:
+            self.element_is_clickable(self.locators.ENABLE_BUTTON)
+        except TimeoutException:
+            return False
+        return True
+
+    def check_change_of_color(self):
+        color_button = self.element_is_present(self.locators.COLOR_CHANGE_BUTTON)
+        color_button_before = color_button.value_of_css_property('color')
+        time.sleep(5)
+        color_button_after = color_button.value_of_css_property('color')
+        return color_button_before, color_button_after
+
+    def check_visible_button(self):
+        try:
+            self.element_is_visible(self.locators.VISIBLE_AFTER_BUTTON)
+        except TimeoutException:
+            return False
+        return True
+
+
+
+
+
+

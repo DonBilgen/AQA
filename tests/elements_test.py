@@ -1,7 +1,8 @@
 import random
 import time
 
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
+    UploadAndDownloadPage, DynamicPropertiesPage
 
 
 class TestElements:
@@ -57,12 +58,12 @@ class TestElements:
             web_table_page.open()
             # input_new_person = list(web_table_page.add_new_person())
             input_new_person = web_table_page.add_new_person()
-            # print(' ')
+
             # print(input_new_person)
-            # print('***' * 25)
+
             output_new_person = web_table_page.check_add_new_person()
             # print(output_new_person)
-            # time.sleep(5)
+
             # assert input_new_person == output_new_person, 'Error creating New person'
             assert input_new_person in output_new_person, 'Error into New person'
 
@@ -133,5 +134,45 @@ class TestElements:
             link_page = LinksPage(driver, 'https://demoqa.com/links')
             link_page.open()
             response_code = link_page.check_broken_link('https://demoqa.com/bad-request')
-            assert response_code == 400, ""
+            assert response_code == 400, "Error code not 400"
 
+        def test_not_found_link(self, driver):
+            link_page = LinksPage(driver, 'https://demoqa.com/links')
+            link_page.open()
+            response_code = link_page.check_not_found_link('https://demoqa.com/invalid-url')
+            assert response_code == 404, "Error url not 404"
+
+    class TestUploadAndDownload:
+
+        def test_upload_file(self, driver):
+            upload_page = UploadAndDownloadPage(driver, 'https://demoqa.com/upload-download')
+            upload_page.open()
+            file_name, result_file = upload_page.upload_file()
+            assert file_name == result_file, "Error file upload"
+
+
+        def test_download_file(self, driver):
+            upload_download_page = UploadAndDownloadPage(driver, 'https://demoqa.com/upload-download')
+            upload_download_page.open()
+            check = upload_download_page.download_file()
+            assert check is True, "Error download file"
+
+    class TestDynamicPropertiesPage:
+
+        def test_dynamic_properties(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver, 'https:/demoqa.com/dynamic-properties')
+            dynamic_properties_page.open()
+            before_color, after_color = dynamic_properties_page.check_change_of_color()
+            assert before_color != after_color, 'Error color not change'
+
+        def test_visible_button(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver, 'https:/demoqa.com/dynamic-properties')
+            dynamic_properties_page.open()
+            visible = dynamic_properties_page.check_visible_button()
+            assert visible is True, "Error visible button >5sec"
+
+        def test_enable_button(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver, 'https:/demoqa.com/dynamic-properties')
+            dynamic_properties_page.open()
+            enable = dynamic_properties_page.check_enable_button()
+            assert enable is True, "Error enable button >5sec"
